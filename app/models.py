@@ -129,6 +129,11 @@ class RepairIntake(Base):
     terms_accepted = Column(Boolean, default=False)
     form_signed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    concierge_requested = Column(Boolean, default=False)
+    concierge_type = Column(String(20))  # "pickup", "dropoff", "both"
+    concierge_address = Column(Text, nullable=True)
+    concierge_status = Column(String(50), default="Pending")
+
 
 class GuitarPhoto(Base):
     __tablename__ = "guitar_photos"

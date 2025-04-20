@@ -35,6 +35,10 @@ class RepairIntakeCreate(BaseModel):
     strings_provided: bool = False
     terms_accepted: bool = False
     form_signed: bool = False
+    concierge_requested: bool = False
+    concierge_type: str = None
+    concierge_address: str = None
+    concierge_status: str = "Pending"
 
 class RepairLineItemCreate(BaseModel):
     repair_id: int
