@@ -38,7 +38,7 @@ def read_root():
     return {"message": "🎸 Welcome to luthiOS API"}
 
 @app.get("/intake", response_class=HTMLResponse)
-def intake_form(request: Request, db: Session = Depends(get_db)):
+async def intake_form(request: Request, db: Session = Depends(get_db)):
     makes = db.query(Make).all()
     models = db.query(Model).all()
     stock_gauges = db.query(InventoryItem.gauge, InventoryItem.guitar_type).filter(
@@ -52,7 +52,7 @@ def intake_form(request: Request, db: Session = Depends(get_db)):
         if gtype:
             gauge_by_type[gtype.lower()].append(gauge)
 
-    return templates.TemplateResponse("intake.html", {
+    context = {
         "request": request,
         "makes": makes,
         "models": models,
@@ -61,7 +61,8 @@ def intake_form(request: Request, db: Session = Depends(get_db)):
             for m in models
         ]),
         "in_stock_gauges": gauge_by_type
-    })
+    }
+    return templates.TemplateResponse("intake.html", context)
 
 @app.post("/submit-intake")
 async def submit_intake(

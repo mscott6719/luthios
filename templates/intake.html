@@ -10,11 +10,10 @@
         button { padding: 0.75rem 1rem; font-size: 1rem; background: #333; color: #fff; border: none; }
     </style>
 </head>
-
 <body>
     <h1>🎸 luthiOS Intake Form</h1>
     <form method="post" action="/submit-intake" enctype="multipart/form-data">
-<!-- CUSTOMER -->
+        <!-- CUSTOMER -->
         <label>First Name</label>
         <input type="text" name="first_name" required>
 
@@ -29,12 +28,12 @@
 
         <label>How did you hear about us?</label>
         <select name="referral_source">
-             <option value="">Select one</option>
-             <option value="Google">Google</option>
-             <option value="Instagram">Instagram</option>
-             <option value="Facebook">Facebook</option>
-             <option value="Referral">Referral/Word of Mouth</option>
-             <option value="Other">Other</option>
+            <option value="">Select one</option>
+            <option value="Google">Google</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Referral">Referral/Word of Mouth</option>
+            <option value="Other">Other</option>
         </select>
 
         <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -42,9 +41,9 @@
             <input type="checkbox" name="marketing_opt_in">
         </label>
 
-<!-- GUITAR -->
+        <!-- GUITAR -->
         <label>Guitar Type</label>
-        <select name="type">
+        <select name="type" id="guitar_type">
             <option value="">Select one</option>
             <option value="Acoustic">Acoustic</option>
             <option value="Electric">Electric</option>
@@ -58,25 +57,22 @@
             {% endfor %}
             <option value="other">Other</option>
         </select>
-        
+
         <div id="make_custom_field" style="display: none;">
             <label>Custom Make</label>
             <input type="text" name="make_custom">
-        </div>        
+        </div>
 
         <label>Model</label>
         <select name="model_select" id="model_select" onchange="toggleModelInput(this)">
             <option value="">Select a model</option>
-            {% for model in models %}
-                <option value="{{ model.name }}">{{ model.name }}</option>
-            {% endfor %}
             <option value="other">Other</option>
         </select>
-        
+
         <div id="model_custom_field" style="display: none;">
             <label>Custom Model</label>
             <input type="text" name="model_custom">
-        </div>        
+        </div>
 
         <label>Year</label>
         <input type="number" name="year">
@@ -87,27 +83,27 @@
         <label>Estimated Value</label>
         <input type="number" name="estimated_value" step="0.01">
 
-<!-- REPAIR INTAKE -->
-<label>String Gauge</label>
-<select name="string_gauge_select" id="string_gauge_select" onchange="toggleGaugeOther()">
-    <option value="">Select a gauge</option>
-    <option value="8-38">8–38</option>
-    <option value="9-42">9–42</option>
-    <option value="10-46">10–46</option>
-    <option value="11-50">11–50</option>
-    <option value="12-54">12–54</option>
-    <option value="13-56">13–56</option>
-    <option value="14-59">14–59</option>
-    <option value="other">Other</option>
-</select>
+        <!-- REPAIR INTAKE -->
+        <label>String Gauge</label>
+        <select name="string_gauge_select" id="string_gauge_select" onchange="toggleGaugeOther()">
+            <option value="">Select a gauge</option>
+            <option value="8-38">8–38</option>
+            <option value="9-42">9–42</option>
+            <option value="10-46">10–46</option>
+            <option value="11-50">11–50</option>
+            <option value="12-54">12–54</option>
+            <option value="13-56">13–56</option>
+            <option value="14-59">14–59</option>
+            <option value="other">Other</option>
+        </select>
 
-<div id="gauge_custom_field" style="display: none;">
-    <label>Custom Gauge</label>
-    <input type="text" name="string_gauge_custom" placeholder="Enter custom gauge (e.g., 10–52)">
-</div>
+        <div id="gauge_custom_field" style="display: none;">
+            <label>Custom Gauge</label>
+            <input type="text" name="string_gauge_custom" placeholder="Enter custom gauge (e.g., 10–52)">
+        </div>
 
         <label>Strings Provided</label>
-        <select name="strings_provided">
+        <select name="strings_provided" id="strings_provided">
             <option value="true">Yes</option>
             <option value="false">No</option>
         </select>
@@ -120,7 +116,7 @@
                 <option value="no">No, please place a custom string order</option>
             </select>
         </div>
-        
+
         <div id="custom_string_box" style="display: none;">
             <label>Custom String Order Details</label>
             <textarea name="custom_string_request" placeholder="Describe preferred string type or brand..."></textarea>
@@ -136,185 +132,104 @@
             <option value="false">No</option>
         </select>
 
-<!-- SERVICES -->
-<label>Services Needed</label>
-
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Setup</span>
-    <input type="checkbox" name="services" value="Setup" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Fretwork</span>
-    <input type="checkbox" name="services" value="Fretwork" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Electronics</span>
-    <input type="checkbox" name="services" value="Electronics" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Structural</span>
-    <input type="checkbox" name="services" value="Structural" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Cleaning</span>
-    <input type="checkbox" name="services" value="Cleaning" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Pickup Install</span>
-    <input type="checkbox" name="services" value="Pickup Install" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Nut & Saddle</span>
-    <input type="checkbox" name="services" value="Nut & Saddle" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Bridge / Tremolo</span>
-    <input type="checkbox" name="services" value="Bridge / Tremolo" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Custom</span>
-    <input type="checkbox" name="services" value="Custom" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Other</span>
-    <input type="checkbox" name="services" value="Other" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Restringing</span>
-    <input type="checkbox" name="services" value="Restringing" style="transform: scale(1.2);">
-</label>
-<label style="display: block; margin-bottom: 1rem;">
-    <span style="display: block; margin-bottom: 0.25rem;">Acoustic</span>
-    <input type="checkbox" name="services" value="Acoustic" style="transform: scale(1.2);">
-</label>
-
-<label>Repair Description</label>
-<textarea name="repair_description" placeholder="Describe the problem or what you’d like done..." rows="4"></textarea>
-
-<label>Upload Photos (1–5 images)</label>
-<input type="file" name="photos" multiple accept="image/*" capture="environment">
-
-
-<!-- CONCIERGE -->
+        <!-- CONCIERGE -->
         <label>Request Concierge?</label>
-        <select name="concierge_requested">
+        <select name="concierge_requested" id="request_concierge">
             <option value="">Select one</option>
             <option value="true">Yes</option>
             <option value="false">No</option>
         </select>
 
-        <label>Concierge Address</label>
-        <label>Street Address</label>
-        <input type="text" name="concierge_street">
-        
-        <label>Address Line 2</label>
-        <input type="text" name="concierge_address2">
-        
-        <label>City</label>
-        <input type="text" name="concierge_city">
-        
-        <label>Postal / ZIP Code</label>
-        <input type="text" name="concierge_zip">        
+        <div id="concierge_fields" style="display: none;">
+            <label>Street Address</label>
+            <input type="text" name="concierge_street">
+            <label>Address Line 2</label>
+            <input type="text" name="concierge_address2">
+            <label>City</label>
+            <input type="text" name="concierge_city">
+            <label>Postal / ZIP Code</label>
+            <input type="text" name="concierge_zip">
+        </div>
 
-<!-- TERMS -->
+        <!-- TERMS -->
         <label>
             <input type="checkbox" name="terms_accepted" required> I accept the terms and conditions
         </label>
 
         <button type="submit">Submit Intake</button>
     </form>
+
     <script>
-        const inStockGauges = {{ in_stock_gauges | tojson }};
-        
+    const inStockGauges = {"test": ["a", "b"]};
+        const allModels = {{ models_json | tojson | safe if models_json is defined else '[]' }};
+
         function evaluateStringOptions() {
-            const gauge = document.querySelector("select[name='string_gauge_select']").value.trim();
-            const stringsProvided = document.querySelector("select[name='strings_provided']").value;
-            const guitarType = document.querySelector("select[name='type']").value;
-        
+            const gauge = document.querySelector("#string_gauge_select").value.trim();
+            const stringsProvided = document.querySelector("#strings_provided").value;
+            const guitarType = document.querySelector("#guitar_type").value;
+
             const matchingGauges = inStockGauges[guitarType?.toLowerCase()] || [];
-        
-            const showStockOption = (
-                stringsProvided === "false" &&
-                matchingGauges.includes(gauge)
-            );
-        
-            const needsCustomOrder = (
-                stringsProvided === "false" &&
-                gauge !== "" &&
-                !matchingGauges.includes(gauge)
-            );
-        
-            // Toggle visibility
-            document.getElementById("stock_string_offer").style.display = showStockOption ? "block" : "none";
+
+            const showStock = stringsProvided === "false" && matchingGauges.includes(gauge);
+            const needsCustom = stringsProvided === "false" && gauge && !matchingGauges.includes(gauge);
+
+            document.getElementById("stock_string_offer").style.display = showStock ? "block" : "none";
             document.getElementById("custom_string_box").style.display =
-                (needsCustomOrder || document.getElementById("accept_stock_strings")?.value === "no") ? "block" : "none";
-        
-            // If switching back to stock match, reset custom field
-            if (!needsCustomOrder && document.getElementById("accept_stock_strings")?.value !== "no") {
-                document.getElementById("custom_string_box").style.display = "none";
-            }
+                (needsCustom || document.getElementById("accept_stock_strings").value === "no") ? "block" : "none";
         }
-        
+
         function toggleGaugeOther() {
             const isOther = document.getElementById("string_gauge_select").value === "other";
             document.getElementById("gauge_custom_field").style.display = isOther ? "block" : "none";
             evaluateStringOptions();
         }
-        
+
         function toggleCustomStrings(select) {
             const wantsCustom = select.value === "no";
             document.getElementById("custom_string_box").style.display = wantsCustom ? "block" : "none";
         }
 
         function toggleMakeInput(select) {
-            const makeCustomField = document.getElementById("make_custom_field");
-            makeCustomField.style.display = (select.value === "other") ? "block" : "none";
+            document.getElementById("make_custom_field").style.display = (select.value === "other") ? "block" : "none";
         }
 
         function toggleModelInput(select) {
-            const modelCustomField = document.getElementById("model_custom_field");
-            modelCustomField.style.display = (select.value === "other") ? "block" : "none";
+            document.getElementById("model_custom_field").style.display = (select.value === "other") ? "block" : "none";
         }
-        
-        // Make sure DOM is ready before attaching listeners
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelector("select[name='string_gauge_select']").addEventListener("change", evaluateStringOptions);
-            document.querySelector("select[name='strings_provided']").addEventListener("change", evaluateStringOptions);
-            document.querySelector("select[name='type']").addEventListener("change", evaluateStringOptions);
+
+        function toggleConciergeFields() {
+            const conciergeSelect = document.getElementById("request_concierge");
+            const conciergeFields = document.getElementById("concierge_fields");
+            conciergeFields.style.display = conciergeSelect.value === "true" ? "block" : "none";
+        }
+
+        function filterModels() {
+            const type = document.getElementById("guitar_type").value;
+            const modelSelect = document.getElementById("model_select");
+            modelSelect.innerHTML = '<option value="">Select a model</option>';
+            allModels.forEach(model => {
+                if (model.type === type) {
+                    const opt = document.createElement("option");
+                    opt.value = model.name;
+                    opt.textContent = model.name;
+                    modelSelect.appendChild(opt);
+                }
+            });
+            modelSelect.appendChild(new Option("Other", "other"));
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("string_gauge_select").addEventListener("change", toggleGaugeOther);
+            document.getElementById("strings_provided").addEventListener("change", evaluateStringOptions);
+            document.getElementById("guitar_type").addEventListener("change", () => {
+                evaluateStringOptions();
+                filterModels();
+            });
+            document.getElementById("request_concierge").addEventListener("change", toggleConciergeFields);
+            filterModels();
+            toggleConciergeFields();
+            evaluateStringOptions();
         });
-
-//populate guitar makes/models based on acoustic/electric choice        
-document.addEventListener("DOMContentLoaded", function() {
-    const typeSelect = document.querySelector("select[name='type']");
-    const modelSelect = document.getElementById("model_select");
-
-    const allModels = {{ models_json | tojson | safe }};
-
-    function filterModels() {
-        const selectedType = typeSelect.value;
-        modelSelect.innerHTML = '<option value="">Select a model</option>';
-
-        allModels.forEach(model => {
-            if (model.type === selectedType) {
-                const opt = document.createElement('option');
-                opt.value = model.name;
-                opt.textContent = model.name;
-                modelSelect.appendChild(opt);
-            }
-        });
-
-        const otherOpt = document.createElement('option');
-        otherOpt.value = "other";
-        otherOpt.textContent = "Other";
-        modelSelect.appendChild(otherOpt);
-    }
-
-    typeSelect.addEventListener("change", filterModels);
-    filterModels();
-});
-        
-        </script>
-        
-            
+    </script>
 </body>
 </html>
