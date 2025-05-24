@@ -16,6 +16,7 @@ class Customer(Base):
     email = Column(String(100))
     phone = Column(String(50))
     marketing_opt_in = Column(Boolean, default=False)
+    referral_source = Column(String(100))
 
     guitars = relationship("Guitar", back_populates="customer")
     notes = relationship("Note", back_populates="customer")
@@ -45,12 +46,16 @@ class Make(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
 
+    models = relationship("Model", back_populates="make")
 
 class Model(Base):
     __tablename__ = "models"
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     make_id = Column(Integer, ForeignKey("makes.id"))
+    guitar_type = Column(String(50))  # "Acoustic" or "Electric"
+
+    make = relationship("Make", back_populates="models")
 
 
 class RepairOrder(Base):
@@ -64,6 +69,7 @@ class RepairOrder(Base):
     line_items = relationship("RepairLineItem", back_populates="repair_order")
     notes = relationship("Note", back_populates="repair_order")
     guitar = relationship("Guitar", back_populates="repairs")
+    appointments = relationship("Appointment", back_populates="repair_order", cascade="all, delete-orphan")
 
 
 class RepairLineItem(Base):
@@ -79,6 +85,7 @@ class RepairLineItem(Base):
     repair_order = relationship("RepairOrder", back_populates="line_items")
     notes = relationship("Note", back_populates="repair_line_item")
     service = relationship("ServiceCatalog")
+    work_logs = relationship("WorkLog", back_populates="repair_line_item")
 
 class ServiceCatalog(Base):
     __tablename__ = "service_catalog"
@@ -126,13 +133,17 @@ class RepairIntake(Base):
     tuning = Column(String(50))
     case_provided = Column(Boolean, default=False)
     strings_provided = Column(Boolean, default=False)
+    accept_stock_strings = Column(Boolean, nullable=True)
+    custom_string_request = Column(Text, nullable=True)
     terms_accepted = Column(Boolean, default=False)
     form_signed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     concierge_requested = Column(Boolean, default=False)
-    concierge_type = Column(String(20))  # "pickup", "dropoff", "both"
     concierge_address = Column(Text, nullable=True)
-    concierge_status = Column(String(50), default="Pending")
+    concierge_street = Column(String(200), nullable=True)
+    concierge_address2 = Column(String(200), nullable=True)
+    concierge_city = Column(String(100), nullable=True)
+    concierge_zip = Column(String(20), nullable=True)
 
 
 class GuitarPhoto(Base):
@@ -158,7 +169,8 @@ class MetricDefinition(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     units = Column(String(50))
-    category = Column(String(50))
+    category_id = Column(Integer, ForeignKey("service_categories.id"))
+    category = relationship("ServiceCategory", back_populates="metrics")
     per_string = Column(Boolean, default=False)
     is_required = Column(Boolean, default=False)
     sort_order = Column(Integer)
@@ -183,7 +195,7 @@ class ServiceCategory(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True)
     description = Column(Text)
-
+    metrics = relationship("MetricDefinition", back_populates="category")
     services = relationship("ServiceCatalog", back_populates="category")
 
 class Estimate(Base):
@@ -224,3 +236,38 @@ class WorkLog(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     repair_line_item = relationship("RepairLineItem", back_populates="work_logs")
+
+class InventoryItem(Base):
+    __tablename__ = "inventory_items"
+    id = Column(Integer, primary_key=True)
+    sku = Column(String(100), unique=True)
+    item_type = Column(String(50))  # e.g. "strings", "pickup"
+    guitar_type = Column(String(20), nullable=True)  # "electric", "acoustic", "nylon", etc.
+    brand = Column(String(100))
+    model = Column(String(100), nullable=True)
+    gauge = Column(String(50), nullable=True)
+    description = Column(Text, nullable=True)
+    vendor = Column(String(100), nullable=True)
+    reorder_link = Column(String(300), nullable=True)  # optional purchase URL
+    in_stock_qty = Column(Integer, default=0)
+    restock_threshold = Column(Integer, default=0)
+    unit_cost = Column(Float, nullable=True)
+    retail_price = Column(Float, nullable=True)
+    location = Column(String(100), nullable=True)
+    barcode = Column(String(100), nullable=True)  # for scanning/labels
+    qr_code_path = Column(String(200), nullable=True)  # if generating & storing locally
+    last_restocked = Column(DateTime, nullable=True)
+    active = Column(Boolean, default=True)
+
+class Appointment(Base):
+    __tablename__ = "appointments"
+    id = Column(Integer, primary_key=True)
+    repair_order_id = Column(Integer, ForeignKey("repair_orders.id"), nullable=False)
+    appointment_type = Column(String(50))  # pickup, dropoff, in-shop
+    scheduled_time = Column(DateTime, nullable=False)
+    location = Column(String(200), nullable=True)
+    notes = Column(Text, nullable=True)
+    status = Column(String(50), default="scheduled")
+
+    repair_order = relationship("RepairOrder", back_populates="appointments")
+

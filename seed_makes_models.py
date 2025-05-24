@@ -1,33 +1,47 @@
 from app.database import SessionLocal
 from app.models import Make, Model
 
-# Define makes and models
-makes_and_models = [
-    ("Fender", ["Stratocaster", "Telecaster", "Jazzmaster", "Jaguar"]),
-    ("Gibson", ["Les Paul", "SG", "ES-335"]),
-    ("Ibanez", ["RG", "S", "AZ"]),
-    ("PRS", ["Custom 24", "Silver Sky", "McCarty"]),
-    ("Martin", ["D-28", "OM-21", "000-15M"]),
-    ("Taylor", ["814ce", "214ce", "GS Mini"]),
-    ("Yamaha", ["Pacifica", "Revstar", "FG800"]),
-    ("Gretsch", ["Electromatic", "Falcon", "Jet"]),
-    ("Epiphone", ["Les Paul Standard", "Dot", "SG Special"]),
-    ("Jackson", ["Soloist", "Dinky", "Rhoads"]),
-]
-
 db = SessionLocal()
 
-for make_name, model_list in makes_and_models:
-    make = Make(name=make_name)
-    db.add(make)
-    db.commit()  # So the ID gets generated
-    db.refresh(make)
+makes = [
+    "Fender",
+    "Gibson",
+    "Martin",
+    "Taylor",
+    "PRS",
+]
 
-    for model_name in model_list:
-        model = Model(name=model_name, make_id=make.id)
-        db.add(model)
+models = [
+    {"name": "Stratocaster", "make_name": "Fender", "guitar_type": "Electric"},
+    {"name": "Telecaster", "make_name": "Fender", "guitar_type": "Electric"},
+    {"name": "Les Paul", "make_name": "Gibson", "guitar_type": "Electric"},
+    {"name": "SG", "make_name": "Gibson", "guitar_type": "Electric"},
+    {"name": "D-28", "make_name": "Martin", "guitar_type": "Acoustic"},
+    {"name": "000-15M", "make_name": "Martin", "guitar_type": "Acoustic"},
+    {"name": "214ce", "make_name": "Taylor", "guitar_type": "Acoustic"},
+    {"name": "814ce", "make_name": "Taylor", "guitar_type": "Acoustic"},
+    {"name": "Custom 24", "make_name": "PRS", "guitar_type": "Electric"},
+]
 
-db.commit()
-db.close()
+for make_name in makes:
+    make = db.query(Make).filter_by(name=make_name).first()
+    if not make:
+        make = Make(name=make_name)
+        db.add(make)
+        db.commit()
+        db.refresh(make)
 
-print("✅ Makes and models seeded.")
+for model in models:
+    make = db.query(Make).filter_by(name=model["make_name"]).first()
+    if make:
+        existing_model = db.query(Model).filter_by(name=model["name"], make_id=make.id).first()
+        if not existing_model:
+            new_model = Model(
+                name=model["name"],
+                make_id=make.id,
+                guitar_type=model["guitar_type"]
+            )
+            db.add(new_model)
+            db.commit()
+
+print("✅ Makes and Models seeded successfully.")

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-import datetime
+from datetime import datetime
 
 class CustomerCreate(BaseModel):
     first_name: str
@@ -7,6 +7,7 @@ class CustomerCreate(BaseModel):
     email: str
     phone: str
     marketing_opt_in: bool = False
+    referral_source: str = None
 
 class GuitarCreate(BaseModel):
     customer_id: int
@@ -33,12 +34,21 @@ class RepairIntakeCreate(BaseModel):
     tuning: str = None
     case_provided: bool = False
     strings_provided: bool = False
+    accept_stock_strings: bool = None
+    custom_string_request: str = None
     terms_accepted: bool = False
     form_signed: bool = False
     concierge_requested: bool = False
-    concierge_type: str = None
-    concierge_address: str = None
-    concierge_status: str = "Pending"
+    concierge_street: str = None
+    concierge_address2: str = None
+    concierge_city: str = None
+    concierge_zip: str = None
+
+    
+class RepairOrderCreate(BaseModel):
+    guitar_id: int
+    status: str = "Intake received"
+    description: str = None
 
 class RepairLineItemCreate(BaseModel):
     repair_id: int
@@ -112,15 +122,15 @@ class InvoiceCreate(BaseModel):
 class PaymentCreate(BaseModel):
     invoice_id: int
     amount: float
-    date_paid: datetime.datetime
+    date_paid: datetime
     method: str
     status: str
     stripe_payment_id: str = None
 
 class WorkLogCreate(BaseModel):
     repair_line_item_id: int
-    start_time: datetime.datetime = None
-    end_time: datetime.datetime = None
+    start_time: datetime = None
+    end_time: datetime = None
     duration_minutes: float = None
     manual_entry: bool = False
     note: str = None
@@ -132,3 +142,33 @@ class NoteCreate(BaseModel):
     repair_order_id: int = None
     repair_line_item_id: int = None
     note_type: str = None
+
+class InventoryItemCreate(BaseModel):
+    sku: str
+    item_type: str
+    brand: str
+    model: str = None
+    gauge: str = None
+    description: str = None
+    vendor: str = None
+    reorder_link: str = None
+    in_stock_qty: int = 0
+    restock_threshold: int = 0
+    unit_cost: float = None
+    retail_price: float = None
+    location: str = None
+    barcode: str = None
+    qr_code_path: str = None
+    last_restocked: datetime = None
+    active: bool = True
+    guitar_type: str = None
+
+class AppointmentCreate(BaseModel):
+    repair_order_id: int
+    appointment_type: str
+    scheduled_time: datetime
+    location: str = None
+    notes: str = None
+    status: str = "scheduled"
+
+

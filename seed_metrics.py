@@ -1,14 +1,17 @@
 from app.database import SessionLocal
-from app.models import MetricDefinition
+from app.models import MetricDefinition, ServiceCategory
 
 db = SessionLocal()
+
+# Lookup categories by name
+category_lookup = {cat.name: cat.id for cat in db.query(ServiceCategory).all()}
 
 # Metric: Action height at 12th fret
 if not db.query(MetricDefinition).filter_by(name="Action height at 12th fret").first():
     db.add(MetricDefinition(
         name="Action height at 12th fret",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=True,
         is_required=True,
         sort_order=1,
@@ -21,7 +24,7 @@ if not db.query(MetricDefinition).filter_by(name="Action height at 1st fret").fi
     db.add(MetricDefinition(
         name="Action height at 1st fret",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=True,
         is_required=False,
         sort_order=2,
@@ -34,7 +37,7 @@ if not db.query(MetricDefinition).filter_by(name="Neck relief").first():
     db.add(MetricDefinition(
         name="Neck relief",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=False,
         is_required=False,
         sort_order=3,
@@ -47,7 +50,7 @@ if not db.query(MetricDefinition).filter_by(name="Nut slot height").first():
     db.add(MetricDefinition(
         name="Nut slot height",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=True,
         is_required=False,
         sort_order=4,
@@ -60,7 +63,7 @@ if not db.query(MetricDefinition).filter_by(name="String spacing at bridge").fir
     db.add(MetricDefinition(
         name="String spacing at bridge",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=False,
         is_required=False,
         sort_order=5,
@@ -73,7 +76,7 @@ if not db.query(MetricDefinition).filter_by(name="String spacing at nut").first(
     db.add(MetricDefinition(
         name="String spacing at nut",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=False,
         is_required=False,
         sort_order=6,
@@ -86,7 +89,7 @@ if not db.query(MetricDefinition).filter_by(name="Bridge saddle height").first()
     db.add(MetricDefinition(
         name="Bridge saddle height",
         units="mm",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=True,
         is_required=False,
         sort_order=7,
@@ -99,7 +102,7 @@ if not db.query(MetricDefinition).filter_by(name="String gauge").first():
     db.add(MetricDefinition(
         name="String gauge",
         units="gauge",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=False,
         is_required=False,
         sort_order=8,
@@ -112,7 +115,7 @@ if not db.query(MetricDefinition).filter_by(name="Tap tone frequency").first():
     db.add(MetricDefinition(
         name="Tap tone frequency",
         units="Hz",
-        category="Acoustic",
+        category_id=category_lookup["Acoustic"],
         per_string=False,
         is_required=False,
         sort_order=1,
@@ -125,7 +128,7 @@ if not db.query(MetricDefinition).filter_by(name="Body resonance frequency").fir
     db.add(MetricDefinition(
         name="Body resonance frequency",
         units="Hz",
-        category="Acoustic",
+        category_id=category_lookup["Acoustic"],
         per_string=False,
         is_required=False,
         sort_order=2,
@@ -138,7 +141,7 @@ if not db.query(MetricDefinition).filter_by(name="Top deflection under tension")
     db.add(MetricDefinition(
         name="Top deflection under tension",
         units="mm",
-        category="Acoustic",
+        category_id=category_lookup["Acoustic"],
         per_string=False,
         is_required=False,
         sort_order=3,
@@ -151,7 +154,7 @@ if not db.query(MetricDefinition).filter_by(name="Sustain time").first():
     db.add(MetricDefinition(
         name="Sustain time",
         units="seconds",
-        category="Acoustic",
+        category_id=category_lookup["Acoustic"],
         per_string=True,
         is_required=False,
         sort_order=4,
@@ -164,7 +167,7 @@ if not db.query(MetricDefinition).filter_by(name="Pickup output").first():
     db.add(MetricDefinition(
         name="Pickup output",
         units="mV",
-        category="Electronics",
+        category_id=category_lookup["Electronics"],
         per_string=True,
         is_required=False,
         sort_order=1,
@@ -177,7 +180,7 @@ if not db.query(MetricDefinition).filter_by(name="Pot resistance").first():
     db.add(MetricDefinition(
         name="Pot resistance",
         units="kΩ",
-        category="Electronics",
+        category_id=category_lookup["Electronics"],
         per_string=False,
         is_required=False,
         sort_order=2,
@@ -190,7 +193,7 @@ if not db.query(MetricDefinition).filter_by(name="Capacitor value").first():
     db.add(MetricDefinition(
         name="Capacitor value",
         units="µF",
-        category="Electronics",
+        category_id=category_lookup["Electronics"],
         per_string=False,
         is_required=False,
         sort_order=3,
@@ -203,7 +206,7 @@ if not db.query(MetricDefinition).filter_by(name="Output jack resistance").first
     db.add(MetricDefinition(
         name="Output jack resistance",
         units="Ω",
-        category="Electronics",
+        category_id=category_lookup["Electronics"],
         per_string=False,
         is_required=False,
         sort_order=4,
@@ -216,7 +219,7 @@ if not db.query(MetricDefinition).filter_by(name="Battery voltage").first():
     db.add(MetricDefinition(
         name="Battery voltage",
         units="V",
-        category="Electronics",
+        category_id=category_lookup["Electronics"],
         per_string=False,
         is_required=False,
         sort_order=5,
@@ -229,7 +232,7 @@ if not db.query(MetricDefinition).filter_by(name="Neck angle").first():
     db.add(MetricDefinition(
         name="Neck angle",
         units="degrees",
-        category="Structural",
+        category_id=category_lookup["Structural"],
         per_string=False,
         is_required=False,
         sort_order=1,
@@ -242,7 +245,7 @@ if not db.query(MetricDefinition).filter_by(name="Fret wear level").first():
     db.add(MetricDefinition(
         name="Fret wear level",
         units="%",
-        category="Fretwork",
+        category_id=category_lookup["Fretwork"],
         per_string=True,
         is_required=False,
         sort_order=1,
@@ -255,7 +258,7 @@ if not db.query(MetricDefinition).filter_by(name="Crack length").first():
     db.add(MetricDefinition(
         name="Crack length",
         units="mm",
-        category="Structural",
+        category_id=category_lookup["Structural"],
         per_string=False,
         is_required=False,
         sort_order=2,
@@ -268,7 +271,7 @@ if not db.query(MetricDefinition).filter_by(name="Humidity").first():
     db.add(MetricDefinition(
         name="Humidity",
         units="% RH",
-        category="Inspection Environment",
+        category_id=category_lookup["Structural"],
         per_string=False,
         is_required=False,
         sort_order=1,
@@ -281,7 +284,7 @@ if not db.query(MetricDefinition).filter_by(name="Temperature").first():
     db.add(MetricDefinition(
         name="Temperature",
         units="°F",
-        category="Inspection Environment",
+        category_id=category_lookup["Structural"],
         per_string=False,
         is_required=False,
         sort_order=2,
@@ -294,7 +297,7 @@ if not db.query(MetricDefinition).filter_by(name="Customer satisfaction rating")
     db.add(MetricDefinition(
         name="Customer satisfaction rating",
         units="1–5 scale",
-        category="Customer Service",
+        category_id=category_lookup["Customer Service"],
         per_string=False,
         is_required=False,
         sort_order=1,
@@ -307,7 +310,7 @@ if not db.query(MetricDefinition).filter_by(name="Time since last string change"
     db.add(MetricDefinition(
         name="Time since last string change",
         units="days",
-        category="Setup",
+        category_id=category_lookup["Setup"],
         per_string=True,
         is_required=False,
         sort_order=9,
